@@ -2,7 +2,7 @@
 
 ## Descripción
 
-Esta es una API para un sistema de e-commerce, diseñada para manejar la lógica de backend, la gestión de productos, usuarios y órdenes. Está construida con **ASP.NET Core**, y provee todos los servicios necesarios para que un frontend o aplicación móvil puedan interactuar con el sistema de manera eficiente.
+Esta es una API-Rest para un sistema de e-commerce, diseñada con Clean Architecture para manejar la lógica de backend, la gestión de productos, usuarios y órdenes. Está construida con **ASP.NET Core**, y provee todos los servicios necesarios para que un frontend o aplicación móvil puedan interactuar con el sistema de manera eficiente.
 
 ### 🌟 Funcionalidades Principales
 
