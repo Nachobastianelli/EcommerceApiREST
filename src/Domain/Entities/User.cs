@@ -16,7 +16,10 @@ namespace Domain.Entities
         public required string Email { get; set; }
         public  required string Password { get; set; }
         public Roles Role {  get; set; }
-        public List<Order>? Orders { get; set; }
-        public List<Invoice>? Invoices { get; set; }
+        public List<Valoration> Valorations { get; set; } = new List<Valoration>();
+        public List<Order> Orders { get; set; } = new List<Order>();
+        public List<Invoice> Invoices { get; set; } = new List<Invoice>();
+
+        public User() { }
     }
 }

@@ -20,6 +20,9 @@ namespace Domain.Entities
         public Sizes size { get; set; }
         public Colors Color { get; set; }
         public int Quantity { get; set; }
-        public List<Valoration> Valorations { get; set; }
+        public List<OrderLines> OrderLines { get; set; } = new List<OrderLines>();
+        public List<Valoration> Valorations { get; set; } = new List<Valoration>();
+
+        public Product() { }    
     }
 }

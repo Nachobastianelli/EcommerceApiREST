@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Interfaces
 {
-    public interface IOrderLinesRepository : IBaseRepository<OrderLines>
+    public interface IAddressRepository : IBaseRepository<Address>
     {
-
     }
 }

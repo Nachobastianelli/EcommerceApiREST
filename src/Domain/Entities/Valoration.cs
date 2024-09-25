@@ -11,8 +11,12 @@ namespace Domain.Entities
     {
         public int ValorationId { get; set; }
         public int IdProduct { get; set; }
+        public Product Product { get; set; }
         public int IdUser { get; set; }
+        public User User { get; set; }
         public Stars Stars { get; set; }
         public string? Opinion { get; set; }
+
+        public Valoration() { }
     }
 }
