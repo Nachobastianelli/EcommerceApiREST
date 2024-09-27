@@ -1,6 +1,7 @@
 ﻿using Domain.Enums;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,7 @@ namespace Domain.Entities
     {
         private decimal _price;
         private string _name;
+        private int _quantity;
 
         public int Id { get; set; }
         public string Name {
@@ -23,7 +25,8 @@ namespace Domain.Entities
                 _name = value;
             }
         }
-        public string Description { get; set; }
+        [MaxLength(500, ErrorMessage = "The description cannot be more than 500 characters long.")]
+        public string? Description { get; set; }
         public Category Category { get; set; }
 
         public decimal Price {
@@ -38,13 +41,35 @@ namespace Domain.Entities
 
         public string ImagePath { get; set; }
         public bool IsAvailable { get; set; }
-        public Sizes size { get; set; }
+        public Sizes Size { get; set; } //Actualizar db cambio de nombre
         public Colors Color { get; set; }
-        public int Quantity { get; set; }
+        public int Quantity
+        {
+            get => _quantity;
+            set
+            {
+                if (value < 0)
+                    throw new ArgumentException("Quantity must be greater than 0.");
+                _quantity = value;
+            }
+        }
         public List<OrderLines> OrderLines { get; set; } = new List<OrderLines>();
         public List<Valoration> Valorations { get; set; } = new List<Valoration>();
 
         public Product() { }    
+
+        public Product (string name, string? description, Category category, decimal price, string imagePath, Sizes size, Colors color, int quantity)
+        {
+            Name = name;
+            Description = description;
+            Category = category;
+            Price = price;
+            ImagePath = imagePath;
+            Size = size;
+            Color = color;
+            Quantity = quantity;
+            VerifyAvailable();
+        }
 
         public void VerifyAvailable () 
         {
@@ -67,7 +92,7 @@ namespace Domain.Entities
 
         public void AddQuantity (int quantity)
         {
-            if (quantity < 0) throw new ArgumentException("Quantity must be greater than 0.");
+            if (quantity <= 0) throw new ArgumentException("Quantity must be greater than 0.");
             Quantity += quantity;
             VerifyAvailable ();
         }
