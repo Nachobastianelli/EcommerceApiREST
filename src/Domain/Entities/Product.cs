@@ -11,48 +11,17 @@ namespace Domain.Entities
 {
     public class Product
     {
-        private decimal _price;
-        private string _name;
-        private int _quantity;
-
         public int Id { get; set; }
-        public string Name {
-            get => _name;
-            set 
-            {
-                if (string.IsNullOrEmpty(value))
-                    throw new ArgumentException("Name cannot be empty.");
-                _name = value;
-            }
-        }
+        public string Name { get; set; }
         [MaxLength(500, ErrorMessage = "The description cannot be more than 500 characters long.")]
         public string? Description { get; set; }
         public Category Category { get; set; }
-
-        public decimal Price {
-            get => _price;
-            set 
-            {
-                if(value <= 0)
-                    throw new ArgumentException("Price must be greater than 0.");
-                _price = value;
-            } 
-        }
-
+        public decimal Price { get; set; }
         public string ImagePath { get; set; }
         public bool IsAvailable { get; set; }
-        public Sizes Size { get; set; } //Actualizar db cambio de nombre
+        public Sizes Size { get; set; } 
         public Colors Color { get; set; }
-        public int Quantity
-        {
-            get => _quantity;
-            set
-            {
-                if (value < 0)
-                    throw new ArgumentException("Quantity must be greater than 0.");
-                _quantity = value;
-            }
-        }
+        public int Quantity { get; set; } //fijarse si da error al crear producto por el private set. Resolucion = saque el private pero solo se va a poder ingresar cantidad al momento de la creacion, despues se maneja por el metodo addQuanitity
         public List<OrderLines> OrderLines { get; set; } = new List<OrderLines>();
         public List<Valoration> Valorations { get; set; } = new List<Valoration>();
 
@@ -76,23 +45,9 @@ namespace Domain.Entities
             IsAvailable = Quantity >= 1;
         }
 
-        public void DecressQuantity(int quantity)
-        {
-            if (Quantity < quantity) 
-            {
-                throw new InvalidOperationException("Insufficient stock.");
-            }
-            else
-            {
-                Quantity -= quantity;
-                VerifyAvailable();
-            }
-
-        }
-
         public void AddQuantity (int quantity)
         {
-            if (quantity <= 0) throw new ArgumentException("Quantity must be greater than 0.");
+            if (quantity == 0) throw new ArgumentException("The quantity must be other than 0.");
             Quantity += quantity;
             VerifyAvailable ();
         }
