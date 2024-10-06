@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Domain.Entities
@@ -15,8 +16,9 @@ namespace Domain.Entities
         public User User { get; private set; }
         public Invoice Invoice { get; set; }
         public DateTime Date { get; private set; } = DateTime.Now;
-        public decimal TotalAmmount { get; private set; } 
+        public decimal TotalAmmount { get; private set; }
         public required Address Address { get; set; } = new Address();
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public StateOrder StateOrder { get; private set; } = StateOrder.New;
 
         public Order() { }

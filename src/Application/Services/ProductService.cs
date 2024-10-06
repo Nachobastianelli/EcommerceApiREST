@@ -25,7 +25,16 @@ namespace Application.Services
         {
             var product = _repository.GetById(id) ?? throw new ArgumentNullException(nameof(id));
 
+            if (product.Quantity - quantity < 0 )
+            {
+                throw new InvalidOperationException("No es posible reducir el stock por debajo de cero.");
+            }
+
             product.AddQuantity(quantity);
+
+            _repository.Update(product);
+            
+
         }
 
         public Product Create(ProductCreateRequest productCreateRequest)
@@ -47,6 +56,11 @@ namespace Application.Services
                 }
             }
 
+            if (productCreateRequest.Price <= 0)
+            {
+                throw new InvalidPriceException("The price must be greater than 0.");
+            }
+
             Product producto = new Product
             {
                 Name = productCreateRequest.Name,
@@ -57,6 +71,7 @@ namespace Application.Services
                 Size = productCreateRequest.Size,
                 Color = productCreateRequest.Color,
                 Quantity = productCreateRequest.Quantity,
+                IsAvailable = productCreateRequest.Quantity > 1
             };
 
             return _repository.Add(producto);

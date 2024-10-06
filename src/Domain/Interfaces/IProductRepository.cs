@@ -9,7 +9,6 @@ namespace Domain.Interfaces
 {
     public interface IProductRepository : IBaseRepository<Product>
     {
-        void AddQuantity(int id, int quantity);
         public List<Product> FilterByCheapest();
         public List<Product> FilterByMostExpensive();
         public List<Product> LittleQuantity();

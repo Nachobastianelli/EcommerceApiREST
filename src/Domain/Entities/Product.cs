@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Domain.Entities
@@ -15,11 +16,14 @@ namespace Domain.Entities
         public string Name { get; set; }
         [MaxLength(500, ErrorMessage = "The description cannot be more than 500 characters long.")]
         public string? Description { get; set; }
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public Category Category { get; set; }
         public decimal Price { get; set; }
         public string ImagePath { get; set; }
         public bool IsAvailable { get; set; }
-        public Sizes Size { get; set; } 
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public Sizes Size { get; set; }
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public Colors Color { get; set; }
         public int Quantity { get; set; } //fijarse si da error al crear producto por el private set. Resolucion = saque el private pero solo se va a poder ingresar cantidad al momento de la creacion, despues se maneja por el metodo addQuanitity
         public List<OrderLines> OrderLines { get; set; } = new List<OrderLines>();

@@ -21,19 +21,10 @@ namespace Infrastructure.Data
             return query; 
         }
 
-        public void AddQuantity (int id, int quantity)
-        {
-            var product = _context.Set<Product>().FirstOrDefault(p => p.Id == id) ?? throw new Exception("Not found"); 
-
-            product.AddQuantity(quantity);
-
-            _context.Update(product);
-            _context.SaveChanges();
-        }
-
         public List<Product> FilterByMostExpensive()
         {
             var query = _context.Set<Product>()
+                .AsEnumerable() //Esto es para pasar los datos a memoria ya que SQLITE no soporta el tipo de dato decimal, ineficiente en tablas grandes pero lo voy a dejar hasta que lo pase a SqlServer
                 .OrderByDescending(p => p.Price)
                 .ToList();
 
@@ -43,6 +34,7 @@ namespace Infrastructure.Data
         public List<Product> FilterByCheapest() 
         {
             var query = _context.Set<Product>()
+                .AsEnumerable()
                 .OrderBy(p => p.Price)
                 .ToList();
 
@@ -51,9 +43,11 @@ namespace Infrastructure.Data
 
         public List<Product> GetByName(string name)
         {
-            return _context.Set<Product>()
-                .Where(u => u.Name.Contains(name, StringComparison.OrdinalIgnoreCase))
+             var query = _context.Set<Product>()
+                .Where(u => u.Name.Contains(name.ToLower()))
                 .ToList();
+
+            return query;
         }
 
         public List<Product> ShowAvailables()
