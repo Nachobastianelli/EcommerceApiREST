@@ -25,13 +25,13 @@ namespace Application.Services
         {
             var product = _repository.GetById(id) ?? throw new ArgumentNullException(nameof(id));
 
-            if (product.Quantity - quantity < 0 )
+            if (product.Quantity + quantity < 0 )
             {
                 throw new InvalidOperationException("No es posible reducir el stock por debajo de cero.");
             }
 
             product.AddQuantity(quantity);
-
+            product.VerifyAvailable();
             _repository.Update(product);
             
 
