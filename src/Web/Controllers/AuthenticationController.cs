@@ -24,8 +24,7 @@ namespace Web.Controllers
         /// Authenticates a user
         /// </summary>
         /// <remarks>
-        /// Return a JWT token for the user logged in, with a role claim iqual to userType passed in the body.
-        /// UserType value must be "Professor" or "Student", case sensitive.
+        /// Return a JWT token for the user logged in, with a role claim iqual to email passed in the body.
         /// </remarks>
         /// 
         [HttpPost("authenticate")]

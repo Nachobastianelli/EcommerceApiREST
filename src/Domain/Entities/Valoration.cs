@@ -15,7 +15,7 @@ namespace Domain.Entities
         public Product Product { get; set; }
         public int IdUser { get; set; }
         public User User { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public Stars Stars { get; set; }
         [MaxLength(300, ErrorMessage = "the opinion must be less than 300 characters")]
         public string? Opinion { get; set; }

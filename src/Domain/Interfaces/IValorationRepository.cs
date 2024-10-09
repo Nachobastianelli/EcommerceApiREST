@@ -9,6 +9,6 @@ namespace Domain.Interfaces
 {
     public interface IValorationRepository : IBaseRepository<Valoration>
     {
-
+       
     }
 }
