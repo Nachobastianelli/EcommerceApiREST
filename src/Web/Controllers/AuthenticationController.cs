@@ -19,22 +19,21 @@ namespace Web.Controllers
             _customAuthenticationService = customAuthenticationService;
         }
 
+
+        /// <summary>
+        /// Authenticates a user
+        /// </summary>
+        /// <remarks>
+        /// Return a JWT token for the user logged in, with a role claim iqual to userType passed in the body.
+        /// UserType value must be "Professor" or "Student", case sensitive.
+        /// </remarks>
+        /// 
         [HttpPost("authenticate")]
-        public ActionResult<string> Authenticate(AuthenticationRequest request)
+        public ActionResult<string> Autenticar(AuthenticationRequest request)
         {
-            try
-            {
-                string token = _customAuthenticationService.Autenticar(request);
-                return Ok(token);
-            }
-            catch (NotAllowedException ex)
-            {
-                return BadRequest(new{message = ex.Message});
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "An unexpected error occurred.");
-            }
+            string token = _customAuthenticationService.Autenticar(request);
+
+            return Ok(token);
         }
     }
 }

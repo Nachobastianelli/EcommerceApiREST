@@ -42,7 +42,7 @@ builder.Services.AddSwaggerGen(setupAction =>
 
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-    setupAction.IncludeXmlComments(xmlPath);
+    setupAction.IncludeXmlComments(xmlPath); //Si esta linea falla agregar en el Web.csproj esta linea: <GenerateDocumentationFile>true</GenerateDocumentationFile>
 
 });
 

@@ -49,7 +49,7 @@ namespace Infrastructure.Services
 
         public string Autenticar(AuthenticationRequest authenticationRequest)
         {
-            var user = ValidateUser (authenticationRequest);
+            var user = ValidateUser(authenticationRequest);
                 
             if (user == null)
             {
@@ -62,7 +62,7 @@ namespace Infrastructure.Services
 
             var claimsForToken = new List<Claim>();
             claimsForToken.Add(new Claim("sub", user.Id.ToString()));
-            claimsForToken.Add(new Claim("given_fullname", user.Fullname));
+            claimsForToken.Add(new Claim("email", user.Email));
             claimsForToken.Add(new Claim("role", user.Role.ToString()));
 
             var jwtSecurityToken = new JwtSecurityToken(
@@ -81,7 +81,7 @@ namespace Infrastructure.Services
 
         public class AuthenticationServiceOptions
         {
-            public const string AuthenticationService = "AuthenticationService";
+            public const string AuthenticationService = "AutenticacionService";
 
             public string Issuer { get; set; }
             public string Audience { get; set; }
