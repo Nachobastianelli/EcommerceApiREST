@@ -24,4 +24,10 @@ namespace Application.Models
 
         public string? Opinion { get; set; }
     }
+
+    public class ValorationDto
+    {
+        public Stars Stars { get; set; }
+        public string? Opinion { get; set; }
+    }
 }
