@@ -51,10 +51,11 @@ namespace Application.Services
             return newValoration;
         }
 
-        public void Delete(int id)
+        public void Delete(int id, string userId)
         {
-            var valoration = _valorationRepository.GetById(id) ?? throw new NotFoundException($"Not Valoration whit the id {id} found");
-            _valorationRepository.Delete(valoration);
+            var existingValoration  = _valorationRepository.GetById(id) ?? throw new NotFoundException($"Not Valoration whit the id {id} found");
+            if (existingValoration.IdUser != int.Parse(userId)) throw new NotAllowedException("You cannot modify a review that is not yours.");
+            _valorationRepository.Delete(existingValoration);
         }
 
         public List<Valoration> GetAll()

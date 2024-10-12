@@ -14,6 +14,6 @@ namespace Application.Interfaces
         List<Valoration> GetAll();
         Valoration Create(int productID, ValorationCreateRequest valoration, string userId);
         void Update(int id, ValorationUpdateRequest valoration, string userId);
-        void Delete(int id);
+        void Delete(int id,string userId);
     }
 }

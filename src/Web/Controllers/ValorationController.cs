@@ -51,7 +51,8 @@ namespace Web.Controllers
         [HttpDelete("{id}")]
         public ActionResult Delete([FromRoute]int id)
         {
-            _valorationService.Delete(id);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? throw new NotFoundException($"Cannot found a user whit this id");
+            _valorationService.Delete(id, userId);
             return NoContent();
         }
     }
