@@ -23,9 +23,9 @@ Esta es una API-Rest para un sistema de e-commerce, diseñada con Clean Architec
 
 | Método | Ruta                         | Descripción                                             |
 |--------|------------------------------|---------------------------------------------------------|
-| POST   | `/api/auth/register`          | Registro de nuevos usuarios                             |
-| POST   | `/api/auth/login`             | Inicio de sesión y generación de token JWT              |
+| POST   | `/api/authentication`         | Inicio de sesión y generación de token JWT              |
 | GET    | `/api/products`               | Listado de todos los productos                          |
+| GET    | `/api/products/{id}`          | Trae un producto por ID                                 |
 | POST   | `/api/products`               | Creación de un nuevo producto                           |
 | PUT    | `/api/products/{id}`          | Actualización de un producto existente                  |
 | DELETE | `/api/products/{id}`          | Eliminación de un producto                              |
@@ -33,3 +33,14 @@ Esta es una API-Rest para un sistema de e-commerce, diseñada con Clean Architec
 | POST   | `/api/orders`                 | Creación de una nueva orden                             |
 | PUT    | `/api/orders/{id}`            | Actualización del estado de una orden                   |
 | GET    | `/api/orders/{id}/invoice`    | Generar y obtener la factura de una orden pagada        |
+| GET    | `/api/users/{id}`             | Trae un usuario por ID                                  |
+| GET    | `/api/users`                  | Listado de todos los usuarios                           |
+| POST   | `/api/users`                  | Creación de un nuevo usuario                            |
+| PUT    | `/api/users/{id}`             | Actualización de un usuario existente                   |
+| DELETE | `/api/users/{id}`             | Eliminación de un usuario                               |
+| GET    | `/api/valorations/{id}`       | Trae una valoración por ID                              |
+| GET    | `/api/valorations`            | Listado de todas las valoraciones                       |
+| POST   | `/api/valorations/{productID}`| Creación de una nueva valoración                        |
+| PUT    | `/api/valorations/{id}`       | Actualización de una valoración existente               |
+| DELETE | `/api/valorations/{id}`       | Eliminación de una valoración                           |
+
