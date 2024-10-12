@@ -15,5 +15,6 @@ namespace Application.Interfaces
         User Create (UserCreateRequest user);
         void Update (int id, UserUpdateRequest user);
         void Delete (int id);
+        User GetByEmail (string email);
     }
 }

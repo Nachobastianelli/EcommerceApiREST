@@ -75,6 +75,13 @@ namespace Web.Controllers
             return Ok(userData);
         }
 
+        [Authorize]
+        [HttpGet("GetUserWEmail/{email}")]
+        public ActionResult<User> GetByEmail([FromRoute]string email)
+        {
+            return _service.GetByEmail(email);
+        }
+
 
     }
 }

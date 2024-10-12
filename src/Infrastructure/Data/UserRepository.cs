@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,11 @@ namespace Infrastructure.Data
 
         public User GetByEmail(string email)
         {
-            return _context.Set<User>().FirstOrDefault(u => u.Email == email);
+            return _context.Set<User>()
+                .Include(v =>v.Valorations)
+                .FirstOrDefault(u => u.Email == email);
         }
+
+        
     }
 }

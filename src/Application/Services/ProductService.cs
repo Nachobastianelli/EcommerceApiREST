@@ -138,5 +138,12 @@ namespace Application.Services
              
             _repository.Update(existingProduct);
         }
+
+        public Product GetProductByIdWithValorations(int id)
+        {
+            var product = _repository.GetById(id) ?? throw new NotFoundException("Anyone product exist whit this id");
+
+            return _repository.GetProductByIdWithValorations(id);
+        }
     }
 }

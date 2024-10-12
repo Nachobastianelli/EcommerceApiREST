@@ -21,6 +21,7 @@ namespace Application.Interfaces
         List<Product> ShowAvailable();
         Product GetById(int id);
         Product Create(ProductCreateRequest productCreateRequest);
+        Product GetProductByIdWithValorations(int id);
 
 
 

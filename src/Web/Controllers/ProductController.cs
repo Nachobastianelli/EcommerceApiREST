@@ -80,10 +80,16 @@ namespace Web.Controllers
         }
 
         [HttpPut("{id}/{quantity}")]
-        public ActionResult AddQuantity([FromRoute]int id, [FromRoute] int quantity)
+        public ActionResult AddQuantity([FromRoute] int id, [FromRoute] int quantity)
         {
             _service.AddQuantity(id, quantity);
             return NoContent();
+        }
+
+        [HttpGet("GetW/Valorations/{id}")]
+        public ActionResult<Product> GetWValorations([FromRoute]int id)
+        {
+            return _service.GetProductByIdWithValorations(id);
         }
 
     }

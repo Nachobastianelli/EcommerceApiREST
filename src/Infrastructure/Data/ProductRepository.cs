@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,6 +56,15 @@ namespace Infrastructure.Data
             var query = _context.Set<Product>()
                 .Where(p => p.IsAvailable == true)
                 .ToList();
+
+            return query;
+        }
+
+        public Product GetProductByIdWithValorations(int id)
+        {
+            var query = _context.Set<Product>()
+                .Include(v => v.Valorations)
+                .FirstOrDefault(p => p.Id == id);
 
             return query;
         }

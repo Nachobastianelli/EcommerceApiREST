@@ -14,6 +14,7 @@ namespace Domain.Interfaces
         public List<Product> LittleQuantity();
         public List<Product> GetByName(string name);
         public List<Product> ShowAvailables();
+        public Product GetProductByIdWithValorations(int id);
 
 
     }

@@ -66,6 +66,12 @@ namespace Application.Services
             return obj;
         }
 
+        public User GetByEmail(string email)
+        {
+            var user = _repository.GetByEmail(email) ?? throw new ArgumentNullException(nameof(email));
+            return user;
+        }
+
         public void Update(int id, UserUpdateRequest user)
         {
             var usuario = _repository.GetById(id) ?? throw new NotFoundException(typeof(User).ToString(), id);
