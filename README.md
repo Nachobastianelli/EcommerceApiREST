@@ -44,3 +44,9 @@ Esta es una API-Rest para un sistema de e-commerce, diseñada con Clean Architec
 | PUT    | `/api/valorations/{id}`       | Actualización de una valoración existente               |
 | DELETE | `/api/valorations/{id}`       | Eliminación de una valoración                           |
 
+## 🔗 Link to Domain Diagram
+
+<a href="https://excalidraw.com/#json=KKI9_XdSfjNk3ukuqBdVD,0PC_I-Adj7Wv4WIdirgZeA">✏Excalidraw📏</a>
+
+
+
