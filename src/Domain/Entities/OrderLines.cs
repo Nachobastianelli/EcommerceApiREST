@@ -8,22 +8,14 @@ namespace Domain.Entities
 {
     public class OrderLines
     {
-        private int _quantity;
+        
         public int Id { get; set; }
         public int ProductId { get; set; }
         public Product Product { get; set; }
         public int OrderId { get; set; }
         public Order Order { get; set; }
         public string Name => Product.Name;
-        public int Quantity
-        {
-            get => _quantity;
-            set
-            {
-                if (value < 0) throw new ArgumentException("Quantity cannot be negative.");
-                _quantity = value;
-            }
-        }
+        public int Quantity { get; set; }
         public decimal UnitPrice => Product.Price;
         public decimal Total => UnitPrice * Quantity;
 

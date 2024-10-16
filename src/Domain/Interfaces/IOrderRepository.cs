@@ -9,6 +9,9 @@ namespace Domain.Interfaces
 {
     public interface IOrderRepository : IBaseRepository<Order>
     {
+        public List<Order> GetOrderInStateNew(int userId);
+        public List<Order> GetOrderInStatePending(int userId);
+        public void CancelDuplicateOrdersInStateNew(int userId);
 
     }
 }

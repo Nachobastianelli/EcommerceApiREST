@@ -14,16 +14,16 @@ namespace Domain.Entities
         public List<OrderLines> OrderLines {  get; private set; } = new List<OrderLines>();
         public int IdUser { get; set; }
         public User User { get; private set; }
-        public Invoice Invoice { get; set; }
-        public DateTime Date { get; private set; } = DateTime.Now;
+        public Invoice? Invoice { get; set; }
+        public DateTime Date { get; private set; } = DateTime.UtcNow;
         public decimal TotalAmmount { get; private set; }
-        public required Address Address { get; set; } = new Address();
+        public  Address? Address { get; set; } = new Address();
         [JsonConverter(typeof(JsonStringEnumConverter))]
-        public StateOrder StateOrder { get; private set; } = StateOrder.New;
+        public StateOrder StateOrder { get;  set; } = StateOrder.New;
 
         public Order() { }
 
-        public Order(User user, Address address)
+        public Order(User user, Address? address)
         {
             User = user ?? throw new ArgumentNullException(nameof(user));
             Address = address ?? throw new ArgumentNullException(nameof(address));
@@ -45,10 +45,18 @@ namespace Domain.Entities
             }
             if (StateOrder != StateOrder.New)
             {
-                throw new InvalidOperationException("It is not possible to add products to the order if it is not new.");
+                throw new InvalidOperationException("Cannot add products to an order unless it's in a 'New' state.");
             }
 
-            OrderLines.Add(orderLine);
+            var exisitngOrderLine = OrderLines.FirstOrDefault(o => o.Name == orderLine.Name);
+            if (exisitngOrderLine != null)
+            {
+                exisitngOrderLine.Quantity += orderLine.Quantity;
+            }
+            else
+            {
+                OrderLines.Add(orderLine);
+            }
             CalculateTotalAmmount();
         }
 
@@ -60,11 +68,23 @@ namespace Domain.Entities
             }
             if (StateOrder != StateOrder.New)
             {
-                throw new InvalidOperationException("It is not possible to remove products to the order if it is not new.");
+                throw new InvalidOperationException("Cannot remove products from an order unless it's in a 'New' state.");
             }
 
-            OrderLines.Remove(orderLine);
-            CalculateTotalAmmount();
+            var exisitngOrderLine = OrderLines.FirstOrDefault(o => o.Name == orderLine.Name);
+            if (exisitngOrderLine != null)
+            {
+                exisitngOrderLine.Quantity -= orderLine.Quantity;
+                if (exisitngOrderLine.Quantity <= 0)
+                {
+                    OrderLines.Remove(exisitngOrderLine);
+                }
+                CalculateTotalAmmount();
+            }
+            else
+            {
+                throw new InvalidOperationException("The product does not exist in the order.");
+            }
         }
 
 
