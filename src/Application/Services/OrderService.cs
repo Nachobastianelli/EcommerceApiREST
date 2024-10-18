@@ -132,12 +132,22 @@ namespace Application.Services
         }
 
 
-        public void Update(int orderId,Address? address)
+        public void Update(int orderId,Address? address, string userId)
         {
             var order = GetById(orderId);
 
-            if (address != null && order.Address != address) order.Address = address;
-            _orderRepository.Update(order);
+            var userID = int.Parse(userId);
+
+            if (order.IdUser == userID)
+            {
+                if (address != null && order.Address != address) order.Address = address;
+                _orderRepository.Update(order);
+            }
+            else
+            {
+                throw new ArgumentException("you cannot modify an order that is not yours.");
+            }
+
         }
     }
 }
