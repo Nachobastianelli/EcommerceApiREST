@@ -20,16 +20,26 @@ namespace Application.Services
             _productRepository = productRepository;
         }
 
+        private bool productIsAvailable(Product product)
+        {
+            product.VerifyAvailable();
+            return product.IsAvailable && product.Quantity > 0;
+        }
+
         public void AddToCart(string userId, int productId)
         {
-            var ordersInStateNew = _orderRepository.GetOrderInStateNew(int.Parse(userId));
             var product = _productRepository.GetById(productId) ?? throw new NotFoundException($"The product whit the Id {productId} not found");
+            
+            if (!productIsAvailable(product)) throw new OutOfStockException($"The product with the Id {productId} is out of stock.");
+
+            var ordersInStateNew = _orderRepository.GetOrderInStateNew(int.Parse(userId));
             if (ordersInStateNew == null)
             {
 
                 Order newOrder = new Order
                 {
                     IdUser = int.Parse(userId),
+                    
                 };
 
                 
@@ -42,11 +52,16 @@ namespace Application.Services
 
 
                 newOrder.AddOrderLine(line);
+                product.AddQuantity(-1);
+                _productRepository.Update(product);
                 _orderRepository.Add(newOrder);
             }
             else 
             {
-                _orderRepository.CancelDuplicateOrdersInStateNew(int.Parse(userId));
+                if (ordersInStateNew.Count > 1)
+                {
+                    _orderRepository.CancelDuplicateOrdersInStateNew(int.Parse(userId));
+                }
 
                 var existingOrder = ordersInStateNew.FirstOrDefault();
 
@@ -58,7 +73,7 @@ namespace Application.Services
 
                     if (existingOrderLine != null)
                     {
-                        existingOrderLine.Quantity += product.Quantity;
+                        existingOrderLine.Quantity += 1;
                     }
                     else
                     {
@@ -74,40 +89,55 @@ namespace Application.Services
                         existingOrder.AddOrderLine(newLine); 
                     }
 
+                    product.AddQuantity(-1);
+                    _productRepository.Update(product);
                     _orderRepository.Update(existingOrder);
 
                 }
             }
         }
 
-        public Order Create(string userId, Order order)
+        public void RemoveToCart(string userId, int productId)
         {
-            throw new NotImplementedException();
+            var checkOrder = _orderRepository.GetOrderInStateNew(int.Parse(userId))?? throw new NotFoundException("The user does not have an order");
+
+            if (checkOrder.Count > 1)
+                _orderRepository.CancelDuplicateOrdersInStateNew(int.Parse(userId));
+
+            var product = _productRepository.GetById(productId) ?? throw new NotFoundException($"The product with the Id {productId} not found");
+
+            var exisitingOrder = checkOrder.FirstOrDefault();
+
+            OrderLines existingOrderLine = exisitingOrder.OrderLines.FirstOrDefault(o => o.Name == product.Name) ?? throw new NotFoundException("you dont have this product in your order");
+
+            exisitingOrder.RemoveOrderLine(existingOrderLine);
+
+            product.AddQuantity(1);
+            
+            _productRepository.Update(product);
+            _orderRepository.Update(exisitingOrder);
+            
         }
 
-        public void Delete(int id)
-        {
-            throw new NotImplementedException();
-        }
+        //elimine el create y el delete por ahora por que pienso que no se deberian de utilizar...
 
         public List<Order> GetAll()
         {
-            throw new NotImplementedException();
+            return _orderRepository.GetAll();
         }
 
         public Order GetById(int id)
         {
-            throw new NotImplementedException();
+            return _orderRepository.GetById(id) ?? throw new NotFoundException($"Order with id {id} not found");
         }
 
-        public void RemoveToCart(string userId, int productId)
-        {
-            throw new NotImplementedException();
-        }
 
-        public void Update(int id, Order order)
+        public void Update(int orderId,Address? address)
         {
-            throw new NotImplementedException();
+            var order = GetById(orderId);
+
+            if (address != null && order.Address != address) order.Address = address;
+            _orderRepository.Update(order);
         }
     }
 }

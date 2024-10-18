@@ -11,9 +11,7 @@ namespace Application.Interfaces
     {
         Order GetById(int id);
         List<Order> GetAll();
-        Order Create (string userId , Order order);
-        void Delete (int id);
-        void Update (int id,Order order);
+        void Update (int id, Address address);
         void AddToCart(string userId, int productId);
         void RemoveToCart(string userId, int productId);
     }

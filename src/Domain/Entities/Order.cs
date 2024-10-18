@@ -74,7 +74,7 @@ namespace Domain.Entities
             var exisitngOrderLine = OrderLines.FirstOrDefault(o => o.Name == orderLine.Name);
             if (exisitngOrderLine != null)
             {
-                exisitngOrderLine.Quantity -= orderLine.Quantity;
+                exisitngOrderLine.Quantity -= 1;
                 if (exisitngOrderLine.Quantity <= 0)
                 {
                     OrderLines.Remove(exisitngOrderLine);
