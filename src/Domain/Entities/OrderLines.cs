@@ -14,9 +14,9 @@ namespace Domain.Entities
         public Product Product { get; set; }
         public int OrderId { get; set; }
         public Order Order { get; set; }
-        public string Name => Product.Name;
+        public string Name {  get; set; }
         public int Quantity { get; set; }
-        public decimal UnitPrice => Product.Price;
+        public decimal UnitPrice {  get; set; }
         public decimal Total => UnitPrice * Quantity;
 
         public OrderLines() { }

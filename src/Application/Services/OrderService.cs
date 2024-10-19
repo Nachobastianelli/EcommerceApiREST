@@ -26,6 +26,43 @@ namespace Application.Services
             return product.IsAvailable && product.Quantity > 0;
         }
 
+        public void DeleteAllOrderLines(string userId)
+        {
+            var ordersInStateNew = _orderRepository.GetOrderInStateNew(int.Parse(userId)) ?? throw new NotFoundException("The user does not have an order whit state new");
+
+            if (ordersInStateNew.Count > 1)
+                _orderRepository.CancelDuplicateOrdersInStateNew(int.Parse(userId));
+
+            var existingOrder = ordersInStateNew.FirstOrDefault();
+
+            if (existingOrder != null || existingOrder.OrderLines.Count >= 1) 
+            {
+
+
+
+                for (int i = existingOrder.OrderLines.Count - 1; i >= 0; i--)
+                {
+                    var line = existingOrder.OrderLines[i];
+                    var product = _productRepository.GetById(line.ProductId);
+
+                    if (product != null)
+                    {
+                        product.AddQuantity(line.Quantity); // Devolver la cantidad al inventario
+                        _productRepository.Update(product); // Actualizar el producto en la base de datos
+                    }
+
+                    existingOrder.RemoveOrderLine(line); // Eliminar la línea de pedido de la orden
+                }
+
+                _orderRepository.Update(existingOrder); // Actualizar la orden en la base de datos
+            }
+            else
+            {
+                throw new NotFoundException("The order does not have an orderLine(s)");
+            }
+
+        }
+
         public void AddToCart(string userId, int productId)
         {
             var product = _productRepository.GetById(productId) ?? throw new NotFoundException($"The product whit the Id {productId} not found");
@@ -33,13 +70,13 @@ namespace Application.Services
             if (!productIsAvailable(product)) throw new OutOfStockException($"The product with the Id {productId} is out of stock.");
 
             var ordersInStateNew = _orderRepository.GetOrderInStateNew(int.Parse(userId));
+                
             if (ordersInStateNew.Count == 0)
             {
 
                 Order newOrder = new Order
                 {
                     IdUser = int.Parse(userId),
-                    
                 };
 
                 
@@ -48,11 +85,14 @@ namespace Application.Services
                     Product = product,
                     Order = newOrder,
                     Quantity = 1,
+                    Name = product.Name,
+                    OrderId = newOrder.Id,
+                    ProductId = product.Id,
+                    UnitPrice = product.Price,
                 };
 
 
                 newOrder.AddOrderLine(line);
-                newOrder.OrderLines.Add(line);
                 product.AddQuantity(-1);
                 _productRepository.Update(product);
                 _orderRepository.Add(newOrder);
@@ -70,7 +110,7 @@ namespace Application.Services
                 {   
                     var existingOrderLine = existingOrder
                                             .OrderLines
-                                            .FirstOrDefault(m => m.Name == product.Name);
+                                            .FirstOrDefault(m => m.ProductId == product.Id);
 
                     if (existingOrderLine != null)
                     {
@@ -85,7 +125,8 @@ namespace Application.Services
                             Quantity = 1,
                             OrderId = existingOrder.Id,
                             ProductId = product.Id,
-                        
+                            Name = product.Name,
+                            UnitPrice = product.Price,
                         };
                         existingOrder.AddOrderLine(newLine); 
                     }

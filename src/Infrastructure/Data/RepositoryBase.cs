@@ -24,12 +24,12 @@ namespace Infrastructure.Data
             _dbContext.SaveChanges();
         }
 
-        public List<T> GetAll()
+        public virtual List<T> GetAll()
         {
             return _dbContext.Set<T>().ToList();
         }
 
-        public T? GetById(int id)
+        public virtual T? GetById(int id)
         {
             return _dbContext.Set<T>().Find(new object[] {id});
         }

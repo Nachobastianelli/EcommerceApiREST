@@ -43,6 +43,18 @@ namespace Web.Controllers
             return NoContent();
         }
 
+        [HttpDelete]
+        public ActionResult RemoveAllProductInOrder()
+        {
+
+            string userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "";
+
+            _orderService.DeleteAllOrderLines(userId);
+
+            return NoContent();
+
+        }
+
         [HttpDelete("{productId}")]
         public ActionResult RemoveOrderLine([FromRoute] int productId)
         {

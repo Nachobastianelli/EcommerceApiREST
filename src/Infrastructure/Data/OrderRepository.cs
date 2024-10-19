@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +14,25 @@ namespace Infrastructure.Data
 
         public OrderRepository(ApplicationContext context) : base(context) { }
 
+        public override List<Order> GetAll()
+        {
+            return _context.Orders
+                .Include(o => o.OrderLines)
+                .ToList();
+        }
+
+        public override Order? GetById(int id)
+        {
+            return _context.Orders
+                .Include(o => o.OrderLines)
+                .FirstOrDefault(i => i.Id.Equals(id));
+        }
+
         public List<Order> GetOrderInStateNew(int userId)
         {
             var query = _context.Set<Order>()
                         .Where(u => u.IdUser == userId && u.StateOrder == Domain.Enums.StateOrder.New)
+                        .Include(o => o.OrderLines)
                         .ToList();
                         
 
