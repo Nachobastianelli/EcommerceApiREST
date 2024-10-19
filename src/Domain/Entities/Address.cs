@@ -4,12 +4,12 @@ using System.ComponentModel.DataAnnotations;
 public class Address
 {
     public int Id { get; set; }
-    public int OrderId { get; set; }
-    public Order Order { get; set; }
+    public int? OrderId { get; set; }
+    public Order? Order { get; set; }
 
-    public string Street { get; set; }
+    public string? Street { get; set; }
     [Phone]
-    public string Phone { get; set; }
+    public string? Phone { get; set; }
 
     public string City { get; set; } = "Rosario";
     public string State { get; set; } = "Santa Fe";
@@ -18,10 +18,5 @@ public class Address
 
     public Address() { }
 
-    public Address(string street, string phone, int orderId)
-    {
-        Street = street;
-        Phone = phone;
-        OrderId = orderId;
-    }
+    
 }

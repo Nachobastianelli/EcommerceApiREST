@@ -15,9 +15,6 @@ namespace Infrastructure.Data
 
         public List<Order> GetOrderInStateNew(int userId)
         {
-
-            CancelDuplicateOrdersInStateNew(userId);
-
             var query = _context.Set<Order>()
                         .Where(u => u.IdUser == userId && u.StateOrder == Domain.Enums.StateOrder.New)
                         .ToList();
@@ -47,10 +44,11 @@ namespace Infrastructure.Data
                 foreach (var order in ordersInStateNew.Skip(1)) 
                 {
                     order.StateOrder = Domain.Enums.StateOrder.Cancelled;
+                    _context.Update(order);
                 }
+                _context.SaveChanges();
 
                 
-                _context.SaveChanges();
             }
         }
     }

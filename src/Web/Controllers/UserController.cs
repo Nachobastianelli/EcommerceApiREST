@@ -22,6 +22,13 @@ namespace Web.Controllers
         [Authorize]
         public ActionResult<User> GetById([FromRoute] int id)
         {
+            var userRole = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+
+            if (userRole != "Admin")
+            {
+                return Forbid();
+            }
+
             return Ok(_service.GetById(id));
         }
 
@@ -29,6 +36,13 @@ namespace Web.Controllers
         [Authorize]
         public ActionResult<List<User>> GetAll()
         {
+            var userRole = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+
+            if (userRole != "Admin")
+            {
+                return Forbid();
+            }
+
             return Ok(_service.GetAll());
         }
 
@@ -42,6 +56,15 @@ namespace Web.Controllers
         [HttpDelete("{id}")]
         public ActionResult Delete(int id)
         {
+
+            var userRole = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+
+
+            if (userRole != "Admin")
+            {
+                return Forbid();
+            }
+           
             _service.Delete(id);
             return NoContent();
         }
@@ -79,7 +102,22 @@ namespace Web.Controllers
         [HttpGet("GetUserWEmail/{email}")]
         public ActionResult<User> GetByEmail([FromRoute]string email)
         {
+            var userRole = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+
+            if (userRole != "Admin")
+            {
+                return Forbid();
+            }
+
             return _service.GetByEmail(email);
+        }
+
+        [HttpPut("role/{userId}")]
+        public ActionResult UpdateRole([FromRoute] int userId, [FromBody] AdminUserUpdateRequest request)
+        {
+            _service.UpdateRole(userId, request);
+
+            return NoContent();
         }
 
 

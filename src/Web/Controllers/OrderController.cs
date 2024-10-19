@@ -56,7 +56,7 @@ namespace Web.Controllers
         [HttpPut("{orderId}")]
         public ActionResult Update([FromRoute] int orderId, [FromBody] Address address) 
         {
-            string userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "";
+            string userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "";  
 
             _orderService.Update(orderId, address, userId);
 

@@ -33,7 +33,7 @@ namespace Application.Services
             if (!productIsAvailable(product)) throw new OutOfStockException($"The product with the Id {productId} is out of stock.");
 
             var ordersInStateNew = _orderRepository.GetOrderInStateNew(int.Parse(userId));
-            if (ordersInStateNew == null)
+            if (ordersInStateNew.Count == 0)
             {
 
                 Order newOrder = new Order
@@ -52,6 +52,7 @@ namespace Application.Services
 
 
                 newOrder.AddOrderLine(line);
+                newOrder.OrderLines.Add(line);
                 product.AddQuantity(-1);
                 _productRepository.Update(product);
                 _orderRepository.Add(newOrder);

@@ -14,6 +14,7 @@ namespace Application.Interfaces
         List<User> GetAll();
         User Create (UserCreateRequest user);
         void Update (int id, UserUpdateRequest user);
+        void UpdateRole(int id, AdminUserUpdateRequest user);
         void Delete (int id);
         User GetByEmail (string email);
     }

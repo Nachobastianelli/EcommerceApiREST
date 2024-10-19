@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Application.Models
@@ -36,5 +38,11 @@ namespace Application.Models
         [StringLength(20, MinimumLength = 8, ErrorMessage = "The password must be at least 8 characters long")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
+    }
+
+    public class AdminUserUpdateRequest
+    {
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public Roles Roles { get; set; }
     }
 }

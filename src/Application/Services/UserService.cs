@@ -1,10 +1,12 @@
 ﻿using Application.Interfaces;
 using Application.Models;
 using Domain.Entities;
+using Domain.Enums;
 using Domain.Exceptions;
 using Domain.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -81,6 +83,16 @@ namespace Application.Services
             if (user.Password != null) usuario.Password = user.Password;
 
             _repository.Update(usuario);
+        }
+
+        public void UpdateRole(int id, AdminUserUpdateRequest userToUpdate)
+        {
+            var user = GetById(id);
+
+            
+            if (user.Role != userToUpdate.Roles) user.Role = userToUpdate.Roles;
+
+            _repository.Update(user);
         }
     }
 }
