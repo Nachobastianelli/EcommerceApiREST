@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using Application.Models;
 using Domain.Entities;
 using Domain.Exceptions;
 using Domain.Interfaces;
@@ -14,10 +15,12 @@ namespace Application.Services
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IProductRepository _productRepository;
-        public OrderService(IOrderRepository orderRepository, IProductRepository productRepository)
+        private readonly IAddressRepository _addressRepository;
+        public OrderService(IOrderRepository orderRepository, IProductRepository productRepository, IAddressRepository addressRepository)
         {
             _orderRepository = orderRepository;
             _productRepository = productRepository;
+            _addressRepository = addressRepository;
         }
 
         private bool productIsAvailable(Product product)
@@ -47,14 +50,14 @@ namespace Application.Services
 
                     if (product != null)
                     {
-                        product.AddQuantity(line.Quantity); // Devolver la cantidad al inventario
-                        _productRepository.Update(product); // Actualizar el producto en la base de datos
+                        product.AddQuantity(line.Quantity); 
+                        _productRepository.Update(product); 
                     }
 
-                    existingOrder.RemoveOrderLine(line); // Eliminar la línea de pedido de la orden
+                    existingOrder.RemoveOrderLine(line); 
                 }
 
-                _orderRepository.Update(existingOrder); // Actualizar la orden en la base de datos
+                _orderRepository.Update(existingOrder); 
             }
             else
             {
@@ -70,6 +73,13 @@ namespace Application.Services
             if (!productIsAvailable(product)) throw new OutOfStockException($"The product with the Id {productId} is out of stock.");
 
             var ordersInStateNew = _orderRepository.GetOrderInStateNew(int.Parse(userId));
+
+            var newAddress = new Address
+            {
+                
+            };
+
+            _addressRepository.Add(newAddress); 
                 
             if (ordersInStateNew.Count == 0)
             {
@@ -77,6 +87,7 @@ namespace Application.Services
                 Order newOrder = new Order
                 {
                     IdUser = int.Parse(userId),
+                    Address = newAddress,
                 };
 
                 
@@ -128,10 +139,12 @@ namespace Application.Services
                             Name = product.Name,
                             UnitPrice = product.Price,
                         };
+                        existingOrder.Address = newAddress;
                         existingOrder.AddOrderLine(newLine); 
                     }
 
                     product.AddQuantity(-1);
+                    existingOrder.CalculateTotalAmmount();
                     _productRepository.Update(product);
                     _orderRepository.Update(existingOrder);
 
@@ -174,15 +187,29 @@ namespace Application.Services
         }
 
 
-        public void Update(int orderId,Address? address, string userId)
+        public void UpdateOrderToStatePending(AddressDto address, string userId)
         {
-            var order = GetById(orderId);
+            var newOrders = _orderRepository.GetOrderInStateNew(int.Parse(userId));
+
+            var order = newOrders.FirstOrDefault();
 
             var userID = int.Parse(userId);
 
             if (order.IdUser == userID)
             {
-                if (address != null && order.Address != address) order.Address = address;
+                order.Address.Phone = address.Phone;
+                order.Address.Street = address.Street;
+                
+
+                var addres = order.Address;
+
+                _addressRepository.Add(addres);
+
+                if (order.Address.Phone != null && order.Address.Street != null )  
+                    order.GoToCheckout();
+                else
+                    throw new BadRequestException("The Phone and Street fields must be filled in to change the orderState.");
+
                 _orderRepository.Update(order);
             }
             else

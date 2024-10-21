@@ -80,6 +80,7 @@ builder.Services.AddScoped<IValorationRepository, ValorationRepository>();
 builder.Services.AddScoped<IValorationService, ValorationService>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderService, OrderService>();  
+builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 #endregion
 
 

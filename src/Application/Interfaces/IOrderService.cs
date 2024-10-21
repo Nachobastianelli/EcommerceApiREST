@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.Models;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace Application.Interfaces
     {
         Order GetById(int id);
         List<Order> GetAll();
-        void Update (int id, Address address, string userId);
+        void UpdateOrderToStatePending (AddressDto address, string userId);
         void DeleteAllOrderLines(string userId);    
 
         void AddToCart(string userId, int productId);

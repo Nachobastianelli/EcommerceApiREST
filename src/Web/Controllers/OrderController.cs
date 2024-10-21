@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces;
+using Application.Models;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -65,12 +66,12 @@ namespace Web.Controllers
             return NoContent();
         }
 
-        [HttpPut("{orderId}")]
-        public ActionResult Update([FromRoute] int orderId, [FromBody] Address address) 
+        [HttpPut("UpdateOrdetToStatePending")]
+        public ActionResult Update([FromBody] AddressDto address) 
         {
             string userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "";  
 
-            _orderService.Update(orderId, address, userId);
+            _orderService.UpdateOrderToStatePending(address, userId);
 
             return NoContent();
         }

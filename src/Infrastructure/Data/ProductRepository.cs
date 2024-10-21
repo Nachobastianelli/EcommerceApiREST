@@ -45,7 +45,7 @@ namespace Infrastructure.Data
         public List<Product> GetByName(string name)
         {
              var query = _context.Set<Product>()
-                .Where(u => u.Name.Contains(name.ToLower()))
+                .Where(u => u.Name.ToLower().Contains(name.ToLower()))
                 .ToList();
 
             return query;
@@ -67,6 +67,25 @@ namespace Infrastructure.Data
                 .FirstOrDefault(p => p.Id == id);
 
             return query;
+        }
+
+        public override List<Product> GetAll()
+        {
+            var query = _context.Set<Product>()
+                .Include(p => p.Valorations)
+                .ToList();
+
+            return query;
+        }
+
+        public override Product? GetById(int id)
+        {
+
+            var query = _context.Set<Product>()
+                .Include(v => v.Valorations)
+                .FirstOrDefault(p => p.Id == id);
+                
+            return query;    
         }
     }
 }
