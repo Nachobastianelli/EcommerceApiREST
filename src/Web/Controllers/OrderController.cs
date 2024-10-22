@@ -23,13 +23,27 @@ namespace Web.Controllers
         [HttpGet("{orderId}")]
         public ActionResult<Order> Get([FromRoute] int orderId)
         {
-            return Ok(_orderService.GetById(orderId));
+            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "";
+            return Ok(_orderService.GetById(orderId, userId));
         }
 
         [HttpGet]
         public ActionResult<List<Order>> Get()
         {
+            var userRole = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+
+            if (userRole != "Admin")
+                return Forbid();
+
             return Ok(_orderService.GetAll());
+        }
+
+        [HttpGet("GetAllOrdersForOneUser")]
+        public ActionResult<List<Order>> GetAll()
+        {
+            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "";
+
+            return Ok(_orderService.GetAllForUser(userId));
         }
 
         [HttpPost("{productId}")]
@@ -67,14 +81,36 @@ namespace Web.Controllers
         }
 
         [HttpPut("UpdateOrdetToStatePending")]
-        public ActionResult Update([FromBody] AddressDto address) 
+        public ActionResult Update([FromBody] AddressDto address)
         {
-            string userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "";  
+            string userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "";
 
             _orderService.UpdateOrderToStatePending(address, userId);
 
             return NoContent();
         }
+
+        [HttpPut("ConfirmOrder/{orderId}")]
+        public ActionResult UpdateToConfirm([FromRoute] int orderId)
+        {
+            string userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "";
+
+            _orderService.ConfirmOrder(orderId, userId);
+
+            return NoContent();
+        }
+
+        [HttpPut("CancelOrder/{orderId}")]
+        public ActionResult UpdateToCancel([FromRoute] int orderId)
+        {
+            string userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value ?? "";
+
+            _orderService.CancelOrder(orderId, userId);
+
+            return NoContent();
+        }
+
+
 
     }
 }

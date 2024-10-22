@@ -54,6 +54,7 @@ namespace Infrastructure.Data
         public List<Product> ShowAvailables()
         {
             var query = _context.Set<Product>()
+                .Include(v => v.Valorations)
                 .Where(p => p.IsAvailable == true)
                 .ToList();
 

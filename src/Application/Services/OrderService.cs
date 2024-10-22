@@ -74,20 +74,14 @@ namespace Application.Services
 
             var ordersInStateNew = _orderRepository.GetOrderInStateNew(int.Parse(userId));
 
-            var newAddress = new Address
-            {
-                
-            };
 
-            _addressRepository.Add(newAddress); 
-                
+                            
             if (ordersInStateNew.Count == 0)
             {
 
                 Order newOrder = new Order
                 {
                     IdUser = int.Parse(userId),
-                    Address = newAddress,
                 };
 
                 
@@ -139,7 +133,7 @@ namespace Application.Services
                             Name = product.Name,
                             UnitPrice = product.Price,
                         };
-                        existingOrder.Address = newAddress;
+                        
                         existingOrder.AddOrderLine(newLine); 
                     }
 
@@ -181,9 +175,22 @@ namespace Application.Services
             return _orderRepository.GetAll();
         }
 
-        public Order GetById(int id)
+        public List<Order> GetAllForUser(string userId)
         {
-            return _orderRepository.GetById(id) ?? throw new NotFoundException($"Order with id {id} not found");
+            List<Order> orders = _orderRepository.GetAll()
+                .Where(o => o.IdUser == int.Parse(userId))
+                .ToList();
+
+            return orders;
+        }
+
+        public Order GetById(int id, string userId)
+        {
+            var userID = int.Parse(userId);
+            var order = _orderRepository.GetById(id) ?? throw new NotFoundException($"Order with id {id} not found");
+            if (userID != order.IdUser)
+                throw new BadRequestException("This order is not yours");
+            return order;
         }
 
 
@@ -193,23 +200,21 @@ namespace Application.Services
 
             var order = newOrders.FirstOrDefault();
 
-            var userID = int.Parse(userId);
+            var existingAddress = _addressRepository.GetAddressOrder(order.Id) ?? throw new NotFoundException("No se ecnotronro");
 
-            if (order.IdUser == userID)
+            if (order.IdUser == int.Parse(userId))
             {
-                order.Address.Phone = address.Phone;
-                order.Address.Street = address.Street;
+                existingAddress.Phone = address.Phone;
+                existingAddress.Street = address.Street;
                 
+                _addressRepository.Update(existingAddress);
 
-                var addres = order.Address;
-
-                _addressRepository.Add(addres);
-
-                if (order.Address.Phone != null && order.Address.Street != null )  
+                if (existingAddress.Phone != null && existingAddress.Street != null )  
                     order.GoToCheckout();
                 else
                     throw new BadRequestException("The Phone and Street fields must be filled in to change the orderState.");
 
+                
                 _orderRepository.Update(order);
             }
             else
@@ -217,6 +222,31 @@ namespace Application.Services
                 throw new ArgumentException("you cannot modify an order that is not yours.");
             }
 
+        }
+
+        public void CancelOrder(int orderId, string userId)
+        {
+            var order = _orderRepository.GetById(orderId) ?? throw new NotFoundException($"The order whit the id {orderId} not found");
+
+            if(order.IdUser != int.Parse(userId)) throw new NotAllowedException("This order is not yours");
+
+            if (order.StateOrder != Domain.Enums.StateOrder.Pending) throw new BadRequestException($"The order state must be pending. Your OrderState: {order.StateOrder.ToString()}");
+
+
+            order.CancelOrder();
+            _orderRepository.Update(order);
+        }
+
+        public void ConfirmOrder(int orderId, string userId)
+        {
+            var order = _orderRepository.GetById(orderId) ?? throw new NotFoundException($"The order whit the id {orderId} not found");
+
+            if (order.IdUser != int.Parse(userId)) throw new NotAllowedException("This order is not yours");
+
+            if (order.StateOrder != Domain.Enums.StateOrder.Pending) throw new BadRequestException($"The order state must be pending. Your OrderState: {order.StateOrder}");
+
+            order.CompleteOrder();
+            _orderRepository.Update(order);
         }
     }
 }

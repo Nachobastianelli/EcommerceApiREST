@@ -15,11 +15,37 @@ namespace Infrastructure.Data
 
         public User GetByEmail(string email)
         {
-            return _context.Set<User>()
+            var query = _context.Set<User>()
                 .Include(v =>v.Valorations)
                 .FirstOrDefault(u => u.Email == email);
+
+            return query;
         }
 
-        
+        public override List<User> GetAll()
+        {
+            var query = _context.Set<User>()
+                .Include(v => v.Valorations)
+                .Include(o => o.Orders)
+                .Include(i => i.Invoices)
+                .ToList();
+
+            return query;
+        }
+
+        public override User? GetById(int id)
+        {
+            var query = _context.Set<User>()
+                .Include(v => v.Valorations)
+                .Include(o => o.Orders)
+                .Include(i => i.Invoices)
+                .FirstOrDefault(u => u.Id == id);
+
+            return query;
+
+
+        }
+
+
     }
 }

@@ -23,14 +23,6 @@ namespace Domain.Entities
 
         public Order() { }
 
-        public Order(User user, Address? address)
-        {
-            User = user ?? throw new ArgumentNullException(nameof(user));
-            Address = address ?? throw new ArgumentNullException(nameof(address));
-            CalculateTotalAmmount();
-        }
-
-
         public void CalculateTotalAmmount ()
         {
             TotalAmmount = OrderLines?.Sum(line => line.Total) ?? 0;

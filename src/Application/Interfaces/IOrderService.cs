@@ -10,9 +10,12 @@ namespace Application.Interfaces
 {
     public interface IOrderService
     {
-        Order GetById(int id);
+        Order GetById(int id, string userId);
         List<Order> GetAll();
+        List<Order> GetAllForUser(string userId);
         void UpdateOrderToStatePending (AddressDto address, string userId);
+        void CancelOrder(int orderId,string userId);
+        void ConfirmOrder(int orderId, string userId);
         void DeleteAllOrderLines(string userId);    
 
         void AddToCart(string userId, int productId);

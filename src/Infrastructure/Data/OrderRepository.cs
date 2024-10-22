@@ -18,6 +18,7 @@ namespace Infrastructure.Data
         {
             return _context.Orders
                 .Include(o => o.OrderLines)
+                .Include(a => a.Address)
                 .ToList();
         }
 
@@ -25,6 +26,7 @@ namespace Infrastructure.Data
         {
             return _context.Orders
                 .Include(o => o.OrderLines)
+                .Include(a => a.Address)
                 .FirstOrDefault(i => i.Id.Equals(id));
         }
 
