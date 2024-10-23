@@ -81,6 +81,15 @@ Esta es una API-Rest para un sistema de e-commerce, diseñada con Clean Architec
 | PUT    | /api/Valoration/{id}                             | Actualiza una valoración por ID                         |
 | DELETE | /api/Valoration/{id}                             | Elimina una valoración por ID                           |
 
+## Ejecucion e instalacion
+```js
+1. git clone https://github.com/nachobastianelli/EcommerceApiRest
+2. cd EcommerceApiRest
+3. dotnet restore
+4. dotnet build
+5. dotnet run
+
+```
 
 ## 🔗 Link to Domain Diagram
 
