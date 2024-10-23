@@ -1,6 +1,6 @@
-# 🛠️ E-Commerce API
+# 🛒 E-Commerce API
 
-## Descripción
+## 📝 Descripción
 
 Esta es una API-Rest para un sistema de e-commerce, diseñada con Clean Architecture para manejar la lógica de backend, la gestión de productos, usuarios y órdenes. Está construida con **ASP.NET Core**, y provee todos los servicios necesarios para que un frontend o aplicación móvil puedan interactuar con el sistema de manera eficiente.
 
@@ -81,19 +81,33 @@ Esta es una API-Rest para un sistema de e-commerce, diseñada con Clean Architec
 | PUT    | /api/Valoration/{id}                             | Actualiza una valoración por ID                         |
 | DELETE | /api/Valoration/{id}                             | Elimina una valoración por ID                           |
 
-## Ejecucion e instalacion
-```js
+## 🛠️ Instalación y Ejecución
+
+```bash
 1. git clone https://github.com/nachobastianelli/EcommerceApiRest
 2. cd EcommerceApiRest
 3. dotnet restore
 4. dotnet build
 5. dotnet run
-
 ```
 
 ## 🔗 Link to Domain Diagram
 
 <a href="https://excalidraw.com/#json=KKI9_XdSfjNk3ukuqBdVD,0PC_I-Adj7Wv4WIdirgZeA">✏Excalidraw📏</a>
+
+###
+
+<br/>
+<br/>
+
+<hr/>
+
+<div align="center">
+  
+  📚 ***Más información del proyecto en la carpeta [DOCS](/docs)***
+  
+</div>
+
 
 
 
