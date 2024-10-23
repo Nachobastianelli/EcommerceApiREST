@@ -19,30 +19,68 @@ Esta es una API-Rest para un sistema de e-commerce, diseñada con Clean Architec
 - **Entity Framework Core**: Para la gestión de la base de datos.
 - **JWT**: Autenticación basada en JSON Web Tokens.
 
-## 📋 Endpoints Principales
+## 📋 Endpoints 
 
-| Método | Ruta                         | Descripción                                             |
-|--------|------------------------------|---------------------------------------------------------|
-| POST   | `/api/authentication`         | Inicio de sesión y generación de token JWT              |
-| GET    | `/api/products`               | Listado de todos los productos                          |
-| GET    | `/api/products/{id}`          | Trae un producto por ID                                 |
-| POST   | `/api/products`               | Creación de un nuevo producto                           |
-| PUT    | `/api/products/{id}`          | Actualización de un producto existente                  |
-| DELETE | `/api/products/{id}`          | Eliminación de un producto                              |
-| GET    | `/api/orders`                 | Listado de órdenes de compra del usuario autenticado    |
-| POST   | `/api/orders`                 | Creación de una nueva orden                             |
-| PUT    | `/api/orders/{id}`            | Actualización del estado de una orden                   |
-| GET    | `/api/orders/{id}/invoice`    | Generar y obtener la factura de una orden pagada        |
-| GET    | `/api/users/{id}`             | Trae un usuario por ID                                  |
-| GET    | `/api/users`                  | Listado de todos los usuarios                           |
-| POST   | `/api/users`                  | Creación de un nuevo usuario                            |
-| PUT    | `/api/users/{id}`             | Actualización de un usuario existente                   |
-| DELETE | `/api/users/{id}`             | Eliminación de un usuario                               |
-| GET    | `/api/valorations/{id}`       | Trae una valoración por ID                              |
-| GET    | `/api/valorations`            | Listado de todas las valoraciones                       |
-| POST   | `/api/valorations/{productID}`| Creación de una nueva valoración                        |
-| PUT    | `/api/valorations/{id}`       | Actualización de una valoración existente               |
-| DELETE | `/api/valorations/{id}`       | Eliminación de una valoración                           |
+### Authentication
+
+| Método | Ruta                                     | Descripción                         |
+|--------|------------------------------------------|-------------------------------------|
+| POST   | /api/Authentication/authenticate         | Autentica a un usuario              |
+
+### Order
+
+| Método | Ruta                                             | Descripción                                             |
+|--------|--------------------------------------------------|---------------------------------------------------------|
+| GET    | /api/Order/{orderId}                             | Obtiene una orden por ID                                |
+| GET    | /api/Order                                        | Obtiene todas las órdenes                               |
+| DELETE | /api/Order                                        | Elimina todas las lineas de producto de una orden                               |
+| GET    | /api/Order/GetAllOrdersForOneUser                 | Obtiene todas las órdenes de un usuario específico       |
+| POST   | /api/Order/{productId}                            | Crea/actualiza una linea de producto para una orden específica         |
+| DELETE | /api/Order/{productId}                            | Elimina un producto de una orden específica              |
+| PUT    | /api/Order/UpdateOrdetToStatePending              | Actualiza una orden al estado pendiente                  |
+| PUT    | /api/Order/ConfirmOrder/{orderId}                 | Confirma una orden por ID                                |
+| PUT    | /api/Order/CancelOrder/{orderId}                  | Cancela una orden por ID                                 |
+
+### Product
+
+| Método | Ruta                                             | Descripción                                             |
+|--------|--------------------------------------------------|---------------------------------------------------------|
+| GET    | /api/Product/{id}                                | Obtiene un producto por ID                              |
+| PUT    | /api/Product/{id}                                | Actualiza un producto por ID                            |
+| DELETE | /api/Product/{id}                                | Elimina un producto por ID                              |
+| POST   | /api/Product                                     | Crea un nuevo producto                                  |
+| GET    | /api/Product/GetAll                              | Obtiene todos los productos                             |
+| GET    | /api/Product/GetAvailable                        | Obtiene los productos disponibles                       |
+| GET    | /api/Product/GetMoreCheaper                      | Obtiene el producto más barato                          |
+| GET    | /api/Product/GetMostExpansive                    | Obtiene el producto más caro                            |
+| GET    | /api/Product/GetByName/{name}                    | Obtiene un listado de productos por nombre                          |
+| GET    | /api/Product/GetLittleQuantity                   | Obtiene productos con poca cantidad                     |
+| PUT    | /api/Product/{id}/{quantity}                     | Actualiza la cantidad de un producto (+ / -)                   |
+| GET    | /api/Product/GetW/Valorations/{id}               | Obtiene un producto con sus valoraciones por ID         |
+
+### User
+
+| Método | Ruta                                             | Descripción                                             |
+|--------|--------------------------------------------------|---------------------------------------------------------|
+| GET    | /api/User/{id}                                   | Obtiene un usuario por ID                               |
+| DELETE | /api/User/{id}                                   | Elimina un usuario por ID                               |
+| PUT    | /api/User/{id}                                   | Actualiza un usuario por ID                             |
+| GET    | /api/User                                        | Obtiene todos los usuarios                              |
+| POST   | /api/User                                        | Crea un nuevo usuario                                   |
+| GET    | /api/User/profile                                | Obtiene el perfil del usuario autenticado               |
+| GET    | /api/User/GetUserWEmail/{email}                  | Obtiene un usuario por correo electrónico               |
+| PUT    | /api/User/role/{userId}                          | Actualiza el rol de un usuario por ID                   |
+
+### Valoration
+
+| Método | Ruta                                             | Descripción                                             |
+|--------|--------------------------------------------------|---------------------------------------------------------|
+| POST   | /api/Valoration/{productId}                      | Crea una nueva valoración para un producto por ID       |
+| GET    | /api/Valoration                                  | Obtiene todas las valoraciones                          |
+| GET    | /api/Valoration/{id}                             | Obtiene una valoración por ID                           |
+| PUT    | /api/Valoration/{id}                             | Actualiza una valoración por ID                         |
+| DELETE | /api/Valoration/{id}                             | Elimina una valoración por ID                           |
+
 
 ## 🔗 Link to Domain Diagram
 
