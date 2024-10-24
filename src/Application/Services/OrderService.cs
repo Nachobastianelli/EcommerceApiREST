@@ -29,6 +29,12 @@ namespace Application.Services
             return product.IsAvailable && product.Quantity > 0;
         }
 
+        /// <summary>
+        /// Deletes all the order lines for a user's active order with the state 'New'.
+        /// Restores the product quantities when removing the order lines.
+        /// </summary>
+        /// <param name="userId">The ID of the user whose order lines are to be deleted.</param>
+        /// <exception cref="NotFoundException">Thrown when no order in state 'New' is found for the user.</exception>
         public void DeleteAllOrderLines(string userId)
         {
             var ordersInStateNew = _orderRepository.GetOrderInStateNew(int.Parse(userId)) ?? throw new NotFoundException("The user does not have an order whit state new");
@@ -66,6 +72,14 @@ namespace Application.Services
 
         }
 
+        /// <summary>
+        /// Adds a product to the user's cart (an order with the state 'New').
+        /// If no such order exists, a new one is created. Updates product availability accordingly.
+        /// </summary>
+        /// <param name="userId">The ID of the user who is adding the product to the cart.</param>
+        /// <param name="productId">The ID of the product being added.</param>
+        /// <exception cref="NotFoundException">Thrown when the product is not found.</exception>
+        /// <exception cref="OutOfStockException">Thrown when the product is out of stock.</exception>
         public void AddToCart(string userId, int productId)
         {
             var product = _productRepository.GetById(productId) ?? throw new NotFoundException($"The product whit the Id {productId} not found");
@@ -146,6 +160,13 @@ namespace Application.Services
             }
         }
 
+        /// <summary>
+        /// Removes a product from the user's cart (an order with the state 'New').
+        /// Restores the product quantity when removing the product from the order.
+        /// </summary>
+        /// <param name="userId">The ID of the user whose product is being removed.</param>
+        /// <param name="productId">The ID of the product to remove.</param>
+        /// <exception cref="NotFoundException">Thrown when the product or order is not found.</exception>
         public void RemoveToCart(string userId, int productId)
         {
             var checkOrder = _orderRepository.GetOrderInStateNew(int.Parse(userId))?? throw new NotFoundException("The user does not have an order");
@@ -175,6 +196,12 @@ namespace Application.Services
             return _orderRepository.GetAll();
         }
 
+
+        /// <summary>
+        /// Retrieves all orders placed by a specific user.
+        /// </summary>
+        /// <param name="userId">The ID of the user whose orders are to be retrieved.</param>
+        /// <returns>A list of orders placed by the user.</returns>
         public List<Order> GetAllForUser(string userId)
         {
             List<Order> orders = _orderRepository.GetAll()
@@ -184,6 +211,16 @@ namespace Application.Services
             return orders;
         }
 
+
+        /// <summary>
+        /// Retrieves a specific order by its ID for a given user.
+        /// Ensures the order belongs to the user.
+        /// </summary>
+        /// <param name="id">The ID of the order.</param>
+        /// <param name="userId">The ID of the user.</param>
+        /// <returns>The order that matches the ID and belongs to the user.</returns>
+        /// <exception cref="NotFoundException">Thrown when the order is not found.</exception>
+        /// <exception cref="BadRequestException">Thrown when the order does not belong to the user.</exception>
         public Order GetById(int id, string userId)
         {
             var userID = int.Parse(userId);
@@ -193,7 +230,13 @@ namespace Application.Services
             return order;
         }
 
-
+        /// <summary>
+        /// Updates the state of a user's order to 'Pending' after verifying the address information is complete.
+        /// </summary>
+        /// <param name="address">The address details to update.</param>
+        /// <param name="userId">The ID of the user whose order is being updated.</param>
+        /// <exception cref="NotFoundException">Thrown when no address or order is found.</exception>
+        /// <exception cref="BadRequestException">Thrown when the address fields are incomplete.</exception>
         public void UpdateOrderToStatePending(AddressDto address, string userId)
         {
             var newOrders = _orderRepository.GetOrderInStateNew(int.Parse(userId));
@@ -224,23 +267,53 @@ namespace Application.Services
 
         }
 
+        /// <summary>
+        /// Cancels an order with the state 'Pending' for a specific user.
+        /// </summary>
+        /// <param name="orderId">The ID of the order to cancel.</param>
+        /// <param name="userId">The ID of the user cancelling the order.</param>
+        /// <exception cref="NotFoundException">Thrown when the order is not found.</exception>
+        /// <exception cref="NotAllowedException">Thrown when the order does not belong to the user.</exception>
+        /// <exception cref="BadRequestException">Thrown when the order is not in a 'Pending' state.</exception>
         public void CancelOrder(int orderId, string userId)
         {
             var order = _orderRepository.GetById(orderId) ?? throw new NotFoundException($"The order whit the id {orderId} not found");
 
-            if(order.IdUser != int.Parse(userId)) throw new NotAllowedException("This order is not yours");
+            if (order.IdUser != int.Parse(userId)) throw new NotAllowedException("This order is not yours");
 
-            if (order.StateOrder != Domain.Enums.StateOrder.Pending) throw new BadRequestException($"The order state must be pending. Your OrderState: {order.StateOrder.ToString()}");
+            if (order.StateOrder != Domain.Enums.StateOrder.Pending) throw new BadRequestException($"The order state must be pending. Your OrderState: {order.StateOrder}");
 
+            for (int i = order.OrderLines.Count - 1; i >= 0; i--)
+            {
+                var line = order.OrderLines[i];
+                var product = _productRepository.GetById(line.ProductId);
+
+                if (product != null)
+                {
+                    product.AddQuantity(line.Quantity);
+                    _productRepository.Update(product);
+                }
+
+            }
 
             order.CancelOrder();
             _orderRepository.Update(order);
         }
 
+
+
+        /// <summary>
+        /// Confirms the order with the state 'Pending' for a specific user, completing the purchase process.
+        /// </summary>
+        /// <param name="orderId">The ID of the order to confirm.</param>
+        /// <param name="userId">The ID of the user confirming the order.</param>
+        /// <exception cref="NotFoundException">Thrown when the order is not found.</exception>
+        /// <exception cref="NotAllowedException">Thrown when the order does not belong to the user.</exception>
+        /// <exception cref="BadRequestException">Thrown when the order is not in a 'Pending' state.</exception>
         public void ConfirmOrder(int orderId, string userId)
         {
             var order = _orderRepository.GetById(orderId) ?? throw new NotFoundException($"The order whit the id {orderId} not found");
-
+            
             if (order.IdUser != int.Parse(userId)) throw new NotAllowedException("This order is not yours");
 
             if (order.StateOrder != Domain.Enums.StateOrder.Pending) throw new BadRequestException($"The order state must be pending. Your OrderState: {order.StateOrder}");

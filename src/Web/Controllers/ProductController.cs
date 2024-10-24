@@ -1,8 +1,10 @@
 ﻿using Application.Interfaces;
 using Application.Models;
 using Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Web.Controllers
 {
@@ -23,9 +25,16 @@ namespace Web.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public ActionResult<Product> Create([FromBody] ProductCreateRequest product)
         {
-            return Ok(_service.Create(product));
+            var role = User.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Role)?.Value;
+
+            if (role == "Seller" || role == "Admin")
+                return Ok(_service.Create(product));
+            
+            return Forbid();
+
         }
 
         [HttpGet("[action]")]
@@ -53,11 +62,18 @@ namespace Web.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize]
         public ActionResult Update([FromRoute] int id, [FromBody] ProductUpdateRequest product)
         {
-            _service.Update(id, product);
+            var role = User.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Role)?.Value;
 
-            return NoContent();
+            if (role == "Seller" || role == "Admin")
+            {
+                _service.Update(id, product);
+                return NoContent();
+            }
+
+            return Forbid();
         }
 
         [HttpGet("[action]/{name}")]
@@ -67,10 +83,18 @@ namespace Web.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
         public ActionResult Delete(int id)
         {
-            _service.Delete(id);
-            return NoContent();
+            var role = User.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Role)?.Value;
+
+            if (role == "Seller" || role == "Admin")
+            {
+                _service.Delete(id);
+                return NoContent();
+            }
+            return Forbid();
+
         }
 
         [HttpGet("[action]")]
@@ -86,11 +110,7 @@ namespace Web.Controllers
             return NoContent();
         }
 
-        [HttpGet("GetW/Valorations/{id}")]
-        public ActionResult<Product> GetWValorations([FromRoute]int id)
-        {
-            return _service.GetProductByIdWithValorations(id);
-        }
+        
 
     }
 }

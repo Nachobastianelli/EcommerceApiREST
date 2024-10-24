@@ -1,5 +1,7 @@
 ﻿using Domain.Entities;
+using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,6 +63,26 @@ namespace Infrastructure.Data
                 .HasOne(a => a.Address)
                 .WithOne(o => o.Order)
                 .HasForeignKey<Address>(a => a.OrderId);
+
+            modelBuilder.Entity<Product>()
+                .Property(e => e.Category)
+                .HasConversion(new EnumToStringConverter<Category>());
+
+            modelBuilder.Entity<Product>()
+                .Property(e => e.Size)
+                .HasConversion(new EnumToStringConverter<Sizes>());
+
+            modelBuilder.Entity<Product>()
+                .Property(e => e.Color)
+                .HasConversion(new EnumToStringConverter<Colors>());
+
+            modelBuilder.Entity<User>()
+                .Property(e => e.Role)
+                .HasConversion(new EnumToStringConverter<Roles>());
+
+            modelBuilder.Entity<Order>()
+                .Property(e => e.StateOrder)
+                .HasConversion(new EnumToStringConverter<StateOrder>());
 
         }
 
