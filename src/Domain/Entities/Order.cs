@@ -1,4 +1,5 @@
 ﻿using Domain.Enums;
+using Domain.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,6 +30,10 @@ namespace Domain.Entities
 
         }
 
+        public void AddInvoiceToOrder (Invoice inovice)
+        {
+            Invoice = inovice;
+        }
         public void AddOrderLine (OrderLines orderLine)
         {
             if (orderLine == null)

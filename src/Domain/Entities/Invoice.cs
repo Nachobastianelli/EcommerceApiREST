@@ -11,7 +11,7 @@ namespace Domain.Entities
     public class Invoice
     {
         public int Id { get; set; }
-        public DateTime Date { get; private set; } = DateTime.Now; 
+        public DateTime Date { get; private set; } = DateTime.UtcNow; 
         public int IdOrder { get; set; }
         public Order Order { get; set; }
         public int IdUser { get; set; }
@@ -20,9 +20,7 @@ namespace Domain.Entities
         public required string UserName { get; set; }
         public required StateOrder OrderState { get; set; }
         public decimal TotalAmount { get; set; } 
-        public string BillingAddress { get; set; }
         public string PaymentMethod { get; set; } 
-        public decimal Taxes { get; set; } 
 
         public static readonly string CompanyName = "Bastianelli S.A.";
         public static readonly string CompanyAddress = "Calle [123], Rosario, Santa Fe , Argentina";
@@ -31,16 +29,6 @@ namespace Domain.Entities
         
         public Invoice() { }
 
-        public Invoice(int idOrder, int idUser, string userName, StateOrder orderState, decimal totalAmount, string billingAddress, string paymentMethod, decimal taxes)
-        {
-            IdOrder = idOrder;
-            IdUser = idUser;
-            UserName = userName;
-            OrderState = orderState;
-            TotalAmount = totalAmount;
-            BillingAddress = billingAddress;
-            PaymentMethod = paymentMethod;
-            Taxes = taxes;
-        }
+       
     }
 }

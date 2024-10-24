@@ -16,7 +16,13 @@ namespace Infrastructure.Data
         public User GetByEmail(string email)
         {
             var query = _context.Set<User>()
-                .Include(v =>v.Valorations)
+                .Include(v => v.Valorations)
+                .Include(o => o.Orders)
+                    .ThenInclude(o => o.OrderLines)
+                .Include(o => o.Orders)
+                    .ThenInclude(o => o.Address)
+                .Include(o => o.Orders)
+                    .ThenInclude(o => o.Invoice)
                 .FirstOrDefault(u => u.Email == email);
 
             return query;
@@ -27,7 +33,11 @@ namespace Infrastructure.Data
             var query = _context.Set<User>()
                 .Include(v => v.Valorations)
                 .Include(o => o.Orders)
-                .Include(i => i.Invoices)
+                    .ThenInclude(o => o.OrderLines)
+                .Include(o => o.Orders)
+                    .ThenInclude(o => o.Address)
+                .Include(o => o.Orders)
+                    .ThenInclude(o => o.Invoice)
                 .ToList();
 
             return query;
@@ -38,7 +48,11 @@ namespace Infrastructure.Data
             var query = _context.Set<User>()
                 .Include(v => v.Valorations)
                 .Include(o => o.Orders)
-                .Include(i => i.Invoices)
+                    .ThenInclude(o => o.OrderLines)
+                .Include(o => o.Orders)
+                    .ThenInclude(o => o.Address)
+                .Include(o => o.Orders)
+                    .ThenInclude(o => o.Invoice)
                 .FirstOrDefault(u => u.Id == id);
 
             return query;

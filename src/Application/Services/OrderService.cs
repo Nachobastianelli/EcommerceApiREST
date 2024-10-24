@@ -16,11 +16,14 @@ namespace Application.Services
         private readonly IOrderRepository _orderRepository;
         private readonly IProductRepository _productRepository;
         private readonly IAddressRepository _addressRepository;
-        public OrderService(IOrderRepository orderRepository, IProductRepository productRepository, IAddressRepository addressRepository)
+        private readonly IUserRepository _userRepository;
+        public OrderService(IOrderRepository orderRepository, IProductRepository productRepository, IAddressRepository addressRepository, IUserRepository userRepository)
         {
             _orderRepository = orderRepository;
             _productRepository = productRepository;
             _addressRepository = addressRepository;
+            _userRepository = userRepository;
+
         }
 
         private bool productIsAvailable(Product product)
@@ -44,6 +47,8 @@ namespace Application.Services
 
             var existingOrder = ordersInStateNew.FirstOrDefault();
 
+            if (existingOrder.OrderLines.Count < 1) throw new BadRequestException("you do not yet have an order line in your order");
+
             if (existingOrder != null || existingOrder.OrderLines.Count >= 1) 
             {
 
@@ -59,8 +64,15 @@ namespace Application.Services
                         product.AddQuantity(line.Quantity); 
                         _productRepository.Update(product); 
                     }
-
-                    existingOrder.RemoveOrderLine(line); 
+                    if (line.Quantity > 1)
+                    {
+                        while (line.Quantity > 0)
+                            existingOrder.RemoveOrderLine(line);
+                    }
+                    else
+                    {
+                        existingOrder.RemoveOrderLine(line);
+                    }
                 }
 
                 _orderRepository.Update(existingOrder); 
@@ -243,7 +255,9 @@ namespace Application.Services
 
             var order = newOrders.FirstOrDefault();
 
-            var existingAddress = _addressRepository.GetAddressOrder(order.Id) ?? throw new NotFoundException("No se ecnotronro");
+            if (order.OrderLines.Count == 0) throw new BadRequestException("You must have at least 1 product in your order to update the status.");
+
+            var existingAddress = _addressRepository.GetAddressOrder(order.Id);
 
             if (order.IdUser == int.Parse(userId))
             {
@@ -318,7 +332,22 @@ namespace Application.Services
 
             if (order.StateOrder != Domain.Enums.StateOrder.Pending) throw new BadRequestException($"The order state must be pending. Your OrderState: {order.StateOrder}");
 
+            var user = _userRepository.GetById(int.Parse(userId));
+
             order.CompleteOrder();
+
+            var invoice = new Invoice
+            {
+                UserName = user.Fullname,
+                IdUser = user.Id,
+                IdOrder = orderId,
+                OrderState = order.StateOrder,
+                PaymentMethod = "Credit card",
+                TotalAmount = order.TotalAmmount,
+            };
+
+            order.AddInvoiceToOrder(invoice);
+
             _orderRepository.Update(order);
         }
     }

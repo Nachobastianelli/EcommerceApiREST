@@ -19,6 +19,7 @@ namespace Infrastructure.Data
             return _context.Orders
                 .Include(o => o.OrderLines)
                 .Include(a => a.Address)
+                .Include(i => i.Invoice)
                 .ToList();
         }
 
@@ -27,6 +28,7 @@ namespace Infrastructure.Data
             return _context.Orders
                 .Include(o => o.OrderLines)
                 .Include(a => a.Address)
+                .Include(i => i.Invoice)
                 .FirstOrDefault(i => i.Id.Equals(id));
         }
 
