@@ -35,7 +35,7 @@ namespace Application.Services
             var isUserExist = _repository.GetByEmail(user.Email);
 
             if (isUserExist != null)
-                throw new Exception("No se puede repetir email"); //Cambiar excepcion en un futuro
+                throw new Exception($"The email: {user.Email} already exists"); 
 
             var usuario = new User
             {

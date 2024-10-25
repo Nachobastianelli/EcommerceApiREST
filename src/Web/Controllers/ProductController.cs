@@ -104,8 +104,14 @@ namespace Web.Controllers
         }
 
         [HttpPut("{id}/{quantity}")]
+        [Authorize]
         public ActionResult AddQuantity([FromRoute] int id, [FromRoute] int quantity)
         {
+            var role = User.Claims.FirstOrDefault(u => u.Type == ClaimTypes.Role)?.Value;
+
+            if (role != "Seller")
+                return Forbid();
+
             _service.AddQuantity(id, quantity);
             return NoContent();
         }

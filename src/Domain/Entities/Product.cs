@@ -25,7 +25,7 @@ namespace Domain.Entities
         public Sizes Size { get; set; }
         [JsonConverter(typeof(JsonStringEnumConverter))]
         public Colors Color { get; set; }
-        public int Quantity { get; set; } //fijarse si da error al crear producto por el private set. Resolucion = saque el private pero solo se va a poder ingresar cantidad al momento de la creacion, despues se maneja por el metodo addQuanitity
+        public int Quantity { get; set; } //fijarse si da error al crear producto por el private set. Resolucion = saque el private pero solo se va a poder ingresar cantidad al momento de la creacion, despues se maneja por el metodo addQuanitity       
         public List<OrderLines> OrderLines { get; set; } = new List<OrderLines>();
         public List<Valoration> Valorations { get; set; } = new List<Valoration>();
 

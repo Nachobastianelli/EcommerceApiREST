@@ -16,6 +16,7 @@ namespace Infrastructure.Data
         public List<Product> LittleQuantity() 
         {
             var query = _context.Set<Product>()
+                .Include(v => v.Valorations)
                 .Where(u => u.Quantity <= 20)
                 .ToList();
 
@@ -25,6 +26,7 @@ namespace Infrastructure.Data
         public List<Product> FilterByMostExpensive()
         {
             var query = _context.Set<Product>()
+                .Include(v => v.Valorations)
                 .AsEnumerable() //Esto es para pasar los datos a memoria ya que SQLITE no soporta el tipo de dato decimal, ineficiente en tablas grandes pero lo voy a dejar hasta que lo pase a SqlServer
                 .OrderByDescending(p => p.Price)
                 .ToList();
@@ -35,6 +37,7 @@ namespace Infrastructure.Data
         public List<Product> FilterByCheapest() 
         {
             var query = _context.Set<Product>()
+                .Include(v => v.Valorations)
                 .AsEnumerable()
                 .OrderBy(p => p.Price)
                 .ToList();
@@ -45,6 +48,7 @@ namespace Infrastructure.Data
         public List<Product> GetByName(string name)
         {
              var query = _context.Set<Product>()
+                .Include(v => v.Valorations)
                 .Where(u => u.Name.ToLower().Contains(name.ToLower()))
                 .ToList();
 
