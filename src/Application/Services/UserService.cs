@@ -50,11 +50,13 @@ namespace Application.Services
 
         public void Delete(int id)
         {
+
             var user = _repository.GetById(id) ?? throw new ArgumentNullException(nameof(id));
 
             _repository.Delete(user);
             
         }
+
 
         public List<User> GetAll()
         {

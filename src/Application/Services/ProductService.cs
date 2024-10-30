@@ -80,12 +80,15 @@ namespace Application.Services
 
         }
 
+        //Lo cambie a en vez de eliminar el producto y que este se salga de todas las ordenes, lo unico que se va a poder hacer es ponerlo en no disponible
         public void Delete(int id)
         {
 
-            var product = _repository.GetById(id) ?? throw new ArgumentNullException(nameof(id));
+            var product = _repository.GetById(id) ?? throw new NotFoundException($"The product whit the id {id} not found");
 
-            _repository.Delete(product);
+            product.IsAvailable = (!product.IsAvailable); 
+
+            _repository.Update(product);
         }
 
         public List<Product> FilterByCheapest()

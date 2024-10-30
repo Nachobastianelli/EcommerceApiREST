@@ -17,6 +17,7 @@ namespace Infrastructure.Data
         {
             var query = _context.Set<Product>()
                 .Include(v => v.Valorations)
+                .OrderBy(q => q.Quantity)
                 .Where(u => u.Quantity <= 20)
                 .ToList();
 

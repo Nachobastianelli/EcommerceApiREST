@@ -82,7 +82,7 @@ namespace Web.Controllers
             return Ok(_service.GetByName(name));
         }
 
-        [HttpDelete("{id}")]
+        [HttpPut("ChangeVisibility/{id}")]
         [Authorize]
         public ActionResult Delete(int id)
         {
