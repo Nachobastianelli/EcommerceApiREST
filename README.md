@@ -19,7 +19,7 @@ Esta es una API-Rest para un sistema de e-commerce, diseñada con Clean Architec
 - **Entity Framework Core**: Para la gestión de la base de datos.
 - **JWT**: Autenticación basada en JSON Web Tokens.
 
-## ClassDiagram
+## 📦 ClassDiagram
 
 ```mermaid
 classDiagram
