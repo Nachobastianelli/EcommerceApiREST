@@ -19,6 +19,97 @@ Esta es una API-Rest para un sistema de e-commerce, diseñada con Clean Architec
 - **Entity Framework Core**: Para la gestión de la base de datos.
 - **JWT**: Autenticación basada en JSON Web Tokens.
 
+## ClassDiagram
+
+```mermaid
+classDiagram
+    direction TB
+
+    
+    class User {
+        +String Id
+        +String Nombre
+        +String Apellido
+        +String Email
+        +String Password
+        +List~Factura~ ListFacturas
+        +List~Valoraciones~ ListValoraciones
+    }
+
+    class Factura {
+        +String IdFactura
+        +DateTime Date
+        +Orden Orden
+        +User Usuario
+        +Decimal MontoTotal
+    }
+
+    class Valoraciones {
+        +String IdValoracion
+        +Producto Producto
+        +User Usuario
+        +String Imagen
+        +DateTime CreatedAt
+        +Int Estrellas
+        +String Opinion
+    }
+
+    class Producto {
+        +String Id
+        +String Nombre
+        +Decimal Precio
+        +String Descripcion
+        +String Imagen
+        +String Talla
+        +String Color
+        +List~Valoraciones~ ListValoraciones
+    }
+
+    class Orden {
+        +String Id
+        +List~OrdenLinea~ Lineas
+        +User Usuario
+        +Decimal Total
+        +DateTime FechaCreacion
+        +String EstadoOrden
+    }
+
+    class OrdenLinea {
+        +String Id
+        +Producto Producto
+        +String Nombre
+        +Int Cantidad
+        +Decimal PrecioUnitario
+        +Decimal Total
+    }
+
+    class Address {
+        +String Id
+        +String Street
+        +String City
+        +String State
+        +String PostalCode
+        +String Country
+        +String Phone
+    }
+
+
+    
+    User "1" -- "0..*" Factura : owns
+    User "1" -- "0..*" Valoraciones : writes
+    User "1" -- "0..*" Orden : places
+
+    direction LR
+    Producto "1" -- "0..*" Valoraciones : receives
+    Producto "1" -- "*" OrdenLinea : has
+
+
+    direction TB
+    Orden "1" -- "0..*" OrdenLinea : contains
+    Factura "1" -- "0..1" Orden
+    Address "1" -- "1" Orden : linkedTo
+```
+
 ## 📋 Endpoints 
 
 ### Authentication
